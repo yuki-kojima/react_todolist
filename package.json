@@ -2,7 +2,7 @@
   "name": "todo_list",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://username.github.io/react-pages",
+  "homepage": "http://yuki-kojima.github.io/react_todolist",
   "dependencies": {
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
