@@ -1,5 +1,67 @@
 import React, { Component } from 'react';
 import './App.css';
+class TaskInput extends Component {
+  render() {
+    return (
+      <div>
+        <input type="text" id="js-inputTask" onChange={e => this.props.handleTextChange(e)} placeholder="タスクを入力してね" />
+        <button onClick={e => this.props.handleAddClick(e)}>追加</button>
+      </div>
+    )
+  }
+}
+
+class TaskList extends Component {
+  render() {
+    const nodes = [];
+    for (var i = 0; i < this.props.taskList.length; i++) {
+      const item = this.props.taskList[i];
+
+      let flag = true;
+      if (this.props.filterType === "all") {
+      } else if (this.props.filterType === "active") {
+        if (item.completed === true) {
+          flag = false;
+        }
+      } else if (this.props.filterType === "completed") {
+        if (item.completed === false) {
+          flag = false;
+        }
+      }
+
+      if (flag === true) {
+        nodes.push(<li key={item.key}>
+            <label>
+              <input type="checkbox" checked={item.completed} onChange={e => this.props.handleListChange(e, item.key)} />
+              {item.label}
+            </label>
+          </li>);
+      }
+    }
+    return <ul className="App-todolist">{nodes}</ul>;
+  }
+}
+
+class TaskSort extends Component {
+  render() {
+    return (
+      <div>
+        <label>
+          <input type="radio" value="all" onChange={e => this.props.handleFilterChange(e.target.value)} checked={this.props.filterType === "all"} />
+          全て
+          </label>
+        <label>
+          <input type="radio" value="active" onChange={e => this.props.handleFilterChange(e.target.value)} checked={this.props.filterType === "active"} />
+          未完了のみ
+          </label>
+        <label>
+          <input type="radio" value="completed" onChange={e => this.props.handleFilterChange(e.target.value)} checked={this.props.filterType === "completed"} />
+          完了のみ
+          </label>
+      </div>
+    )
+  }
+}
 
 class App extends Component {
   constructor() {
@@ -10,6 +72,11 @@ class App extends Component {
       taskList: [],
       filterType: "all"
     };
+
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleAddClick = this.handleAddClick.bind(this);
+    this.handleListChange = this.handleListChange.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
   }
   handleTextChange(event) {
     this.setState({
@@ -45,55 +112,16 @@ class App extends Component {
   handleFilterChange(filterType) {
     this.setState({
       filterType: filterType
-    })
+    });
   }
   render() {
-    const nodes = [];
-    for (var i = 0; i < this.state.taskList.length; i++) {
-      const item = this.state.taskList[i];
-
-      let flag = true;
-      if (this.state.filterType === "all") {
-      } else if (this.state.filterType === "active") {
-        if (item.completed === true) {
-          flag = false;
-        }
-      } else if (this.state.filterType === "completed") {
-        if (item.completed === false) {
-          flag = false;
-        }
-      }
-
-      if (flag === true) {
-        nodes.push(<li key={item.key}>
-          <label><input type="checkbox" checked={item.completed} onChange={(e) => this.handleListChange(e, item.key)} />{item.label}</label>
-        </li>);
-      }
-    }
 
     return <div className="App">
         <h1>TODO LIST</h1>
-        <div>
-          <input type="text" id="js-inputTask" onChange={e => this.handleTextChange(e)} placeholder="タスクを入力してね" />
-          <button onClick={e => this.handleAddClick(e)}>追加</button>
-        </div>
+        <TaskInput handleTextChange={this.handleTextChange} handleAddClick={this.handleAddClick} />
         <p>{this.state.inputText}</p>
-        {/* this.stateはコンストラクタで作ったもの */}
-      <ul className="App-todolist">{nodes}</ul>
-        <div>
-          <label>
-            <input type="radio" value="all" onChange={e => this.handleFilterChange(e.target.value)} checked={this.state.filterType === "all"} />
-            全て
-          </label>
-          <label>
-            <input type="radio" value="active" onChange={e => this.handleFilterChange(e.target.value)} checked={this.state.filterType === "active"} />
-            未完了のみ
-          </label>
-          <label>
-          <input type="radio" value="completed" onChange={e => this.handleFilterChange(e.target.value)} checked={this.state.filterType === "completed"} />
-            完了のみ
-          </label>
-        </div>
+        <TaskList taskList={this.state.taskList} handleListChange={this.handleListChange} filterType={this.state.filterType}/>
+        <TaskSort handleFilterChange={this.handleFilterChange} filterType={this.state.filterType} />
       </div>;
   }
 }
