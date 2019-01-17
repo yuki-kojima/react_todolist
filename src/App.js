@@ -35,7 +35,6 @@ class App extends Component {
     for (var i = 0; i < taskList.length; i++) {
       if (taskList[i].key === key) {
         taskList[i].completed = !taskList[i].completed;
-        console.log(taskList[i].completed);
       }
     }
     this.setState({
